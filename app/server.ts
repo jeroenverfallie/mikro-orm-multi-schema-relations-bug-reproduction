@@ -13,7 +13,7 @@ export const DI = {} as {
 };
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3000;
 
 (async () => {
   DI.orm = await MikroORM.init();

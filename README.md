@@ -2,20 +2,28 @@
 2. Run `docker-compose up -d` to start postgres
 3. Migrate using the generator: `npx mikro-orm schema:create --run`
 4. Run via `yarn start` or `yarn start:dev` (watch mode)
-5. Example API is running on localhost:3000
 
-Available routes:
 
+Given the following setup:
 ```
-GET     /author        finds all authors
-GET     /author/:id    finds author by id
-POST    /author        creates new author
-PUT     /author/:id    updates author by id
+foo.Author
+foo.Publisher
+bar.Book
+bar.BookTag
 ```
 
+Bug reproduction: Browse to `http://localhost:3000/author/2/books`
+
+```js
+// author.controller.ts
+const books = await DI.bookRepository.find({ author: {id: req.params.id} });
 ```
-GET     /book          finds all books
-GET     /book/:id      finds book by id
-POST    /book          creates new book
-PUT     /book/:id      updates book by id
+
+Result
 ```
+{
+  "message": "select \"b0\".* from \"bar\".\"book\" as \"b0\" left join \"bar\".\"author\" as \"a1\" on \"b0\".\"author__id\" = \"a1\".\"_id\" where \"a1\".\"id\" = '2' - relation \"bar.author\" does not exist"
+}
+```
+
+```bar.author" should be "foo.author"```
