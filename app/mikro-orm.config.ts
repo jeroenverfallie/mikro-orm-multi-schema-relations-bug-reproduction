@@ -1,13 +1,18 @@
 import { Options } from '@mikro-orm/core';
-import { MongoHighlighter } from '@mikro-orm/mongo-highlighter';
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
+
 import { Author, Book, BookTag, Publisher, BaseEntity } from './entities';
 
 const options: Options = {
-  type: 'mongo',
+  type: 'postgresql',
   entities: [Author, Book, BookTag, Publisher, BaseEntity],
-  dbName: 'mikro-orm-express-ts',
-  highlighter: new MongoHighlighter(),
+  dbName: 'postgres',
+  highlighter: new SqlHighlighter(),
   debug: true,
+  host: '127.0.0.1',
+  port: 5432,
+  user: 'postgres',
+  password: 'postgres'
 };
 
 export default options;

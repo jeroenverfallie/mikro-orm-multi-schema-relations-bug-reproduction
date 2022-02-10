@@ -1,13 +1,15 @@
 version: "3.4"
 
 services:
-  mongo:
-    container_name: mongo
-    image: mongo:3.7
+  postgres:
+    container_name: postgres
+    image: postgres:10.5
+    environment:
+      POSTGRES_PASSWORD: postgres
     ports:
-      - 27017:27017
-    volumes:
-      - mongo:/data/db
+      - '5432:5432'
+    volumes: 
+      - ./postgres-data:/var/lib/postgresql/data
 
 volumes:
-  mongo:
+  postgres:

@@ -7,13 +7,13 @@ import { Book } from '../entities';
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
-  const books = await DI.bookRepository.findAll(['author'], { title: QueryOrder.DESC }, 20);
+  const books = await DI.bookRepository.findAll({populate: ['author'], orderBy: { title: QueryOrder.DESC }, limit: 20});
   res.json(books);
 });
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const book = await DI.bookRepository.findOne(+req.params.id, ['author']);
+    const book = await DI.bookRepository.findOne(req.params.id, {populate: ['author']});
 
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
@@ -21,7 +21,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
     res.json(book);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 
@@ -38,13 +38,13 @@ router.post('/', async (req: Request, res: Response) => {
 
     res.json(book);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const book = await DI.bookRepository.findOne(+req.params.id);
+    const book = await DI.bookRepository.findOne(req.params.id);
 
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
@@ -55,7 +55,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     res.json(book);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 

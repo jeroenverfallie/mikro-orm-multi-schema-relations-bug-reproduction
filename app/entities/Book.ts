@@ -2,7 +2,7 @@ import { Cascade, Collection, Entity, ManyToMany, ManyToOne, Property } from '@m
 import { Author, BookTag, Publisher } from './index';
 import { BaseEntity } from './BaseEntity';
 
-@Entity()
+@Entity({ schema: 'bar' })
 export class Book extends BaseEntity {
 
   @Property()

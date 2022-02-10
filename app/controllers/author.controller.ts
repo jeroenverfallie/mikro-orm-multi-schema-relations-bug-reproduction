@@ -8,13 +8,13 @@ import { Author } from '../entities';
 const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
-  const authors = await DI.authorRepository.findAll(['books'], { name: QueryOrder.DESC }, 20);
+  const authors = await DI.authorRepository.findAll({populate: ['books'], orderBy: {name: QueryOrder.DESC}, limit: 20});
   res.json(authors);
 });
 
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const author = await DI.authorRepository.findOne(+req.params.id, ['books']);
+    const author = await DI.authorRepository.findOne({ id: req.params.id }, {populate: ['books']});
 
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
@@ -22,7 +22,21 @@ router.get('/:id', async (req: Request, res: Response) => {
 
     res.json(author);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
+  }
+});
+
+router.get('/:id/books', async (req: Request, res: Response) => {
+  try {
+    const books = await DI.bookRepository.find({ author: {id: req.params.id} });
+
+    if (!books) {
+      return res.status(404).json({ message: 'Books not found' });
+    }
+
+    res.json(books);
+  } catch (e) {
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 
@@ -39,13 +53,13 @@ router.post('/', async (req: Request, res: Response) => {
 
     res.json(author);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 
 router.put('/:id', async (req: Request, res: Response) => {
   try {
-    const author = await DI.authorRepository.findOne(+req.params.id);
+    const author = await DI.authorRepository.findOne(req.params.id);
 
     if (!author) {
       return res.status(404).json({ message: 'Author not found' });
@@ -56,7 +70,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
     res.json(author);
   } catch (e) {
-    return res.status(400).json({ message: e.message });
+    return res.status(400).json({ message: (e as Error).message });
   }
 });
 
